@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirPods - Immerse Yourself</title>
+    <style>
+        /* CSS Variables for Default Theme */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --matte-black: #111111;
+            --gray: #f5f5f7;
+            --dark-gray: #86868b;
+            --accent-color: #7b61ff; 
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --dropdown-hover: rgba(0, 0, 0, 0.05);
+            --modal-bg: rgba(0, 0, 0, 0.6);
+            --border-color: #e5e5ea;
+        }
+
+        /* Blue Theme Variables */
+        body.theme-blue {
+            --bg-color: #f0f4f8;
+            --text-color: #0b192c;
+            --matte-black: #102a43;
+            --gray: #e2e8f0;
+            --dark-gray: #486581;
+            --accent-color: #1864ab; 
+            --nav-bg: rgba(240, 244, 248, 0.9);
+            --dropdown-hover: rgba(24, 100, 171, 0.1);
+            --modal-bg: rgba(11, 25, 44, 0.7);
+            --border-color: #cbd5e1;
+        }
+
+        /* Black Theme Variables (Dark Mode) */
+        body.theme-black {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --matte-black: #000000;
+            --gray: #1e1e1e;
+            --dark-gray: #a0a0a0;
+            --accent-color: #555555; 
+            --nav-bg: rgba(18, 18, 18, 0.9);
+            --dropdown-hover: rgba(255, 255, 255, 0.1);
+            --modal-bg: rgba(0, 0, 0, 0.8);
+            --border-color: #333333;
+        }
+
+        /* Global Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease; }
+        h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; }
+        img { max-width: 100%; height: auto; border-radius: 12px; }
+        a { color: var(--accent-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Navigation Bar */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; border-bottom: 1px solid var(--border-color); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--text-color); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { font-size: 1.8rem; }
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { color: var(--text-color); text-decoration: none; font-weight: 500; }
+
+        /* Support Dropdown Menu */
+        .dropdown { position: relative; display: inline-block; padding: 10px 0; }
+        .dropbtn { display: flex; align-items: center; gap: 5px; cursor: pointer; color: var(--text-color); font-weight: 500;}
+        .dropdown-content { display: none; position: absolute; top: 100%; right: -50px; background-color: var(--nav-bg); min-width: 220px; box-shadow: 0px 8px 24px rgba(0,0,0,0.15); border-radius: 12px; padding: 10px 0; z-index: 1001; border: 1px solid var(--border-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        .dropdown-content a, .dropdown-content span { color: var(--text-color); padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem; transition: background-color 0.2s ease; cursor: pointer; }
+        .dropdown-content a:hover, .dropdown-content span:hover { background-color: var(--dropdown-hover); text-decoration: none;}
+        .dropdown:hover .dropdown-content { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Theme Switcher */
+        .theme-picker { display: flex; gap: 10px; align-items: center; margin-left: 10px; border-left: 1px solid var(--dark-gray); padding-left: 15px; }
+        .theme-btn { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s ease; }
+        .theme-btn:hover { transform: scale(1.2); }
+        .theme-btn.active { border: 2px solid var(--text-color); }
+        .btn-default { background-color: #7b61ff; }
+        .btn-blue { background-color: #1864ab; }
+        .btn-black { background-color: #111111; border: 1px solid #ccc; }
+
+        /* Buttons & Forms */
+        .cta-group { display: flex; align-items: center; gap: 20px; }
+        .btn-primary { background-color: var(--accent-color); color: white; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: background-color 0.3s ease; border: none; cursor: pointer; font-size: 1rem; text-align: center; }
+        .btn-primary:hover { opacity: 0.9; text-decoration: none;}
+        .btn-secondary { color: white; text-decoration: none; font-weight: 500; cursor: pointer; }
+        .w-100 { width: 100%; margin-top: 15px; }
+        input, textarea, select { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--dark-gray); font-size: 1rem; background-color: transparent; color: var(--text-color); font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-color); }
+        .input-row { display: flex; gap: 15px; }
+
+        /* Layout Sections */
+        .hero { height: 100vh; background-color: var(--matte-black); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; transition: background-color 0.5s ease; }
+        .hero h1 { font-size: 4rem; margin-bottom: 10px; }
+        .hero p { font-size: 1.25rem; color: #e0e0e0; max-width: 600px; margin-bottom: 30px; }
+        .features { padding: 120px 5% 100px; max-width: 1200px; margin: 0 auto; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 40px; }
+        .feature-card { background-color: var(--gray); padding: 30px; border-radius: 20px; text-align: center; transition: background-color 0.5s ease; }
+        .feature-card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 20px; }
+        .gallery { height: 60vh; background-image: url('https://www.on-mag.fr/templates/yootheme/cache/8b/Apple_Airpods_Pro_3_1-8b0a1241.webp'); background-attachment: fixed; background-position: center; background-size: cover; }
+        .in-the-box { padding: 100px 5%; max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 50px; }
+        .in-the-box-img { flex: 1 1 400px; }
+        .in-the-box-content { flex: 1 1 300px; }
+        .in-the-box ul { list-style: none; margin-top: 20px;}
+        .in-the-box li { font-size: 1.1rem; padding: 15px 0; border-bottom: 1px solid var(--border-color); color: var(--dark-gray); }
+
+        /* Pincode & Footer */
+        .pincode-section { background-color: var(--gray); padding: 30px; border-radius: 15px; margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center; }
+        .pincode-input-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .pincode-msg { margin-top: 10px; font-weight: 500; font-size: 0.95rem; display: none; }
+        .success-msg { color: #28a745; } .error-msg { color: #dc3545; }
+        .footer-cta { background-color: var(--matte-black); color: white; text-align: center; padding: 80px 20px 40px; transition: background-color 0.5s ease; }
+        .shipping-policy { font-weight: bold; margin-bottom: 30px; display: block; color: #fff;}
+        .footer-links { margin-top: 60px; padding-top: 20px; border-top: 1px solid #333; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .footer-links span { color: var(--dark-gray); font-size: 0.9rem; cursor: pointer; }
+        .footer-links span:hover { color: white; }
+
+        /* --- Global Modal Styles --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background-color: var(--bg-color); color: var(--text-color); width: 100%; border-radius: 20px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease forwards; overflow: hidden; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: var(--dark-gray); cursor: pointer; transition: color 0.2s ease; z-index: 10; line-height: 1; }
+        .close-btn:hover { color: var(--text-color); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Checkout Modal specific */
+        .checkout-box { max-width: 550px; max-height: 90vh; overflow-y: auto; padding: 40px; }
+        .order-summary { display: flex; align-items: center; gap: 20px; background-color: var(--gray); padding: 15px; border-radius: 12px; margin: 20px 0; }
+        .order-summary img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
+
+        /* --- Support Center Layout --- */
+        .support-box { max-width: 900px; height: 80vh; display: flex; flex-direction: row; }
+        .support-sidebar { width: 250px; background-color: var(--gray); padding: 40px 20px; overflow-y: auto; border-right: 1px solid var(--border-color); }
+        .support-sidebar h3 { margin-bottom: 20px; font-size: 1.5rem; padding-left: 10px;}
+        .support-tab-btn { display: block; width: 100%; text-align: left; background: none; border: none; padding: 12px 10px; font-size: 1rem; color: var(--text-color); cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: background 0.2s; }
+        .support-tab-btn:hover { background-color: rgba(128,128,128,0.1); }
+        .support-tab-btn.active { background-color: var(--accent-color); color: white; font-weight: bold; }
+        .support-body { flex: 1; padding: 40px; overflow-y: auto; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        .tab-content h2 { margin-bottom: 20px; font-size: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        
+        /* Support Specific Elements */
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-bar input { margin-bottom: 0; }
+        .faq-item { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
+        .faq-item h4 { margin-bottom: 5px; color: var(--accent-color); }
+        .video-placeholder { width: 100%; height: 200px; background-color: var(--matte-black); color: white; display: flex; justify-content: center; align-items: center; border-radius: 12px; margin: 20px 0; font-weight: bold; cursor: pointer; }
+        .contact-info-card { background-color: var(--gray); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .contact-info-card p { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .tracking-result { display: none; background-color: var(--gray); padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 5px solid #28a745; }
+
+        /* --- Live Chat Widget --- */
+        .chat-widget-container { position: fixed; bottom: 30px; right: 30px; z-index: 1500; display: flex; flex-direction: column; align-items: flex-end;}
+        .chat-toggle-btn { width: 60px; height: 60px; border-radius: 50%; background-color: var(--accent-color); color: white; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s ease; display: flex; justify-content: center; align-items: center; }
+        .chat-toggle-btn:hover { transform: scale(1.1); }
+        .chat-window { display: none; width: 320px; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 15px; transform-origin: bottom right; animation: scaleUp 0.3s ease; }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .chat-header { background-color: var(--accent-color); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { padding: 20px; max-height: 400px; overflow-y: auto; }
+        .chat-body p.info { font-size: 0.85rem; color: var(--dark-gray); margin-bottom: 15px; text-align: center; }
+
+        /* Scroll Animations */
+        .hidden { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .show { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 100ms; } .delay-2 { transition-delay: 200ms; } .delay-3 { transition-delay: 300ms; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .support-box { flex-direction: column; height: 90vh; }
+            .support-sidebar { width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 1px solid var(--border-color); display: flex; overflow-x: auto; gap: 10px; }
+            .support-sidebar h3 { display: none; }
+            .support-tab-btn { white-space: nowrap; width: auto; margin-bottom: 0; padding: 8px 15px; }
+            .support-body { padding: 20px; }
+            .input-row { flex-direction: column; gap: 0; }
+            .chat-widget-container { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo"><span class="logo-icon">🎧</span> Sonic Audio</a>
+        <div class="nav-links">
+            <div class="dropdown">
+                <span class="dropbtn">Support ▾</span>
+                <div class="dropdown-content">
+                    <span onclick="openSupport('setup')">Setup & Pairing Guide</span>
+                    <span onclick="openSupport('troubleshoot')">Troubleshooting</span>
+                    <span onclick="openSupport('warranty')">Warranty & Repair</span>
+                    <span onclick="openSupport('track')">Track Your Order</span>
+                    <span onclick="openSupport('contact')">Contact Us</span>
+                </div>
+            </div>
+            <div class="theme-picker">
+                <button class="theme-btn btn-default active" onclick="setTheme('default')" title="Default Theme"></button>
+                <button class="theme-btn btn-blue" onclick="setTheme('blue')" title="Blue Theme"></button>
+                <button class="theme-btn btn-black" onclick="setTheme('black')" title="Black Theme"></button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 class="hidden">Immerse Yourself in Pure Sound.</h1>
+        <p class="hidden delay-1">Experience next-generation Active Noise Cancellation, personalized Spatial Audio, and a fit that feels like magic.</p>
+        <div class="cta-group hidden delay-2">
+            <button class="btn-primary" onclick="openCheckout()">Buy Now - $249</button>
+            <a href="#buy" class="btn-secondary">Check Pincode &gt;</a>
+        </div>
+    </header>
+
+    <section class="features">
+        <h2 class="hidden" style="text-align: center; font-size: 2.5rem;">Magic, remastered.</h2>
+        <div class="features-grid">
+            <div class="feature-card hidden delay-1"><img src="https://m.media-amazon.com/images/I/61CTVhLCI4L._SL1500_.jpg" alt="ANC"><h3>Silence the World.</h3><p>Up to 2x more Active Noise Cancellation.</p></div>
+            <div class="feature-card hidden delay-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH0aMiwzB7NfLH4TCC-K5p5tXsvT8_-EzVlw&s" alt="Spatial Audio"><h3>Sound all around you.</h3><p>Dynamic head tracking brings a theater-like experience.</p></div>
+            <div class="feature-card hidden delay-3"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQw6Sg0BGukTVaoypR-7t87yCiqTd9FPSyAA&s" alt="Battery"><h3>Power that lasts.</h3><p>Up to 30 hours of total listening time with the case.</p></div>
+            <div class="feature-card hidden delay-4"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnSLwSjumjgMVuUx0MkD7LDpbYWWxmgZWVtA&s" alt="Connect"><h3>Effortless Magic.</h3><p>Just open the case near your device and tap connect.</p></div>
+        </div>
+    </section>
+
+    <section class="gallery"></section>
+    <section class="in-the-box">
+        <div class="in-the-box-img hidden"><img src="https://media.tatacroma.com/Croma%20Assets/Entertainment/Wireless%20Earbuds/Images/262016_okfsmf.png" alt="Box"></div>
+        <div class="in-the-box-content hidden delay-2">
+            <h2>What's in the Box</h2>
+            <ul><li>AirPods (Left and Right)</li><li>MagSafe Charging Case (USB-C)</li><li>Silicone ear tips (XS, S, M, L)</li><li>USB-C Braided Charge Cable</li></ul>
+        </div>
+    </section>
+
+    <footer class="footer-cta" id="buy">
+        <div class="pincode-section hidden delay-1">
+            <h3 style="color: var(--text-color);">Check Delivery Availability</h3>
+            <div class="pincode-input-group">
+                <input type="text" id="pincodeInput" placeholder="Enter your Pincode" maxlength="6">
+                <button class="btn-primary" style="padding: 12px 20px;" onclick="checkPincode()">Check</button>
+            </div>
+            <p id="pincodeMsg" class="pincode-msg"></p>
+        </div>
+        <h2 class="hidden delay-2">Ready to upgrade your listening experience?</h2>
+        <span class="shipping-policy hidden delay-3">🚚 Standard Delivery Time: 2-3 Weeks</span>
+        <button class="btn-primary hidden delay-3" onclick="openCheckout()">Add to Cart - $249</button>
+        <div class="footer-links">
+            <span onclick="openSupport('setup')">Support Hub</span>
+            <span onclick="openSupport('track')">Track Order</span>
+            <span onclick="openSupport('contact')">Contact Us</span>
+        </div>
+    </footer>
+
+    <div id="checkoutModal" class="modal-overlay">
+        <div class="modal-content checkout-box">
+            <span class="close-btn" onclick="closeModal('checkoutModal')">&times;</span>
+            <div style="text-align: center; margin-bottom: 20px;"><h2>Secure Checkout</h2></div>
+            <div class="order-summary">
+                <img src="https://images.unsplash.com/photo-1608156639585-b3a032ef9689?q=80&w=150&auto=format&fit=crop" alt="AirPods">
+                <div><h4>Sonic Audio Pro Earbuds</h4><p>$249.00 <span style="font-size: 0.9em; color: var(--dark-gray);">(Free Shipping)</span></p></div>
+            </div>
+            <form onsubmit="submitForm(event, 'Order placed successfully!')">
+                <h3 style="margin-bottom: 10px;">Contact & Shipping</h3>
+                <input type="text" placeholder="Full Name" required>
+                <div class="input-row"><input type="email" placeholder="Email Address" required><input type="tel" placeholder="Phone Number" required></div>
+                <input type="text" placeholder="Street Address" required>
+                <div class="input-row"><input type="text" placeholder="City" required><input type="text" placeholder="Pincode" required></div>
+                <button type="submit" class="btn-primary w-100">Confirm Order & Pay</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="supportModal" class="modal-overlay">
+        <div class="modal-content support-box">
+            <span class="close-btn" onclick="closeModal('supportModal')">&times;</span>
+            
+            <div class="support-sidebar">
+                <h3>Support</h3>
+                <button class="support-tab-btn active" onclick="switchSupportTab('setup')">Setup & Pairing</button>
+                <button class="support-tab-btn" onclick="switchSupportTab('troubleshoot')">Troubleshooting</button>
+                <button class="support-tab-btn" onclick="switchSupportTab('warranty')">Warranty & Repair</button>
+                <button class="support-tab-btn" onclick="switchSupportTab('track')">Track Your Order</button>
+                <button class="support-tab-btn" onclick="switchSupportTab('contact')">Contact Us</button>
+            </div>
+
+            <div class="support-body">
+                
+                <div id="tab-setup" class="tab-content active">
+                    <h2>Setup & Pairing Guide</h2>
+                    <p>Follow these simple steps to get your product working right out of the box.</p>
+                    <div class="video-placeholder">▶️ Watch Step-by-Step Video</div>
+                    <div class="faq-item">
+                        <h4>1. Open the Case</h4><p>Ensure your device's Bluetooth is ON. Open the lid of the charging case near your device.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>2. Tap Connect</h4><p>A pairing animation will appear on your screen. Tap 'Connect'.</p>
+                    </div>
+                    <h4 style="margin-top: 20px;">Downloads & Compatibility</h4>
+                    <p style="color: var(--dark-gray); font-size: 0.9rem; margin-top: 5px;">
+                        <a href="#">📄 Download Quick Start PDF</a><br><br>
+                        <strong>Compatibility:</strong> iOS 15+, Android 10+, Windows 11, macOS Monterey+.
+                    </p>
+                </div>
+
+                <div id="tab-troubleshoot" class="tab-content">
+                    <h2>Troubleshooting</h2>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search for an issue (e.g. 'won't turn on')...">
+                        <button class="btn-primary" style="padding: 10px 20px;">Search</button>
+                    </div>
+                    <div class="faq-item"><h4>Device won't turn on</h4><p>Ensure the case is fully charged. Leave the earbuds in the case plugged into a power source for 30 minutes.</p></div>
+                    <div class="faq-item"><h4>Left earbud has no sound</h4><p>Place both earbuds in the case, close the lid for 10 seconds, then reopen. If the issue persists, perform a factory reset.</p></div>
+                    <div class="faq-item"><h4>Error Code: Red Flashing Light</h4><p>This indicates a hardware pairing error. Press and hold the back button for 15 seconds to hard-reset.</p></div>
+                </div>
+
+                <div id="tab-warranty" class="tab-content">
+                    <h2>Warranty & Repair Request</h2>
+                    <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--dark-gray);">Your product is covered by a <strong>1-year limited warranty</strong>. Standard repair turnaround is 7-10 business days.</p>
+                    <form onsubmit="submitForm(event, 'Repair request submitted. We will email you a shipping label.')">
+                        <div class="input-row"><input type="text" placeholder="Full Name" required><input type="email" placeholder="Email Address" required></div>
+                        <input type="text" placeholder="Shipping Address" required>
+                        <div class="input-row"><input type="text" placeholder="Product Model" required><input type="text" placeholder="Serial Number" required></div>
+                        <div class="input-row">
+                            <input type="text" placeholder="Order Number" required>
+                            <input type="text" placeholder="Date of Purchase (MM/DD/YYYY)" required>
+                        </div>
+                        <textarea rows="4" placeholder="Describe the issue in detail..." required></textarea>
+                        <label style="font-size: 0.9rem; margin-bottom: 10px; display: block;">Upload Photo/Video of defect:</label>
+                        <input type="file" accept="image/*,video/*" style="border: none; padding: 0;">
+                        <button type="submit" class="btn-primary w-100">Submit Request</button>
+                    </form>
+                </div>
+
+                <div id="tab-track" class="tab-content">
+                    <h2>Track Your Order</h2>
+                    <p style="margin-bottom: 20px;">Enter your details below to check your current shipping status.</p>
+                    <form id="trackForm" onsubmit="mockTrackOrder(event)">
+                        <input type="text" placeholder="Order Number (e.g. SA-10924)" required>
+                        <input type="email" placeholder="Email used at checkout" required>
+                        <button type="submit" class="btn-primary w-100">Find Order</button>
+                    </form>
+                    <div id="trackingResult" class="tracking-result">
+                        <h3 style="color: #28a745;">Shipped</h3>
+                        <p><strong>Courier:</strong> FedEx Express</p>
+                        <p><strong>Tracking Link:</strong> <a href="#">FDX-998273645</a></p>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">Estimated delivery: Tomorrow by 8:00 PM</p>
+                    </div>
+                </div>
+
+                <div id="tab-contact" class="tab-content">
+                    <h2>Contact Us</h2>
+                    <div class="contact-info-card">
+                        <p>📞 <strong>Phone:</strong> 127393903</p>
+                        <p>✉️ <strong>Email:</strong> help@gmail.com</p>
+                        <p>🏢 <strong>Address:</strong> 123 Audio Lane, Tech City, IN</p>
+                        <p style="font-size: 0.85rem; color: var(--dark-gray); margin-top: 10px;">*We aim to respond to all inquiries within 24-48 hours.</p>
+                    </div>
+                    <form onsubmit="submitForm(event, 'Message sent! We will get back to you within 48 hours.')">
+                        <div class="input-row"><input type="text" placeholder="Your Name" required><input type="email" placeholder="Email Address" required></div>
+                        <input type="text" placeholder="Subject Line" required>
+                        <textarea rows="4" placeholder="How can we help you today?" required></textarea>
+                        <button type="submit" class="btn-primary w-100">Send Message</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-widget-container">
+        <div id="chatWindow" class="chat-window">
+            <div class="chat-header">
+                <span>Live Chat Agent</span>
+                <span style="cursor: pointer;" onclick="toggleChat()">✕</span>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <p class="info">Operating Hours: 24/7<br>Expected wait time: ~2 minutes</p>
+                <form onsubmit="startChat(event)">
+                    <input type="text" placeholder="Your Name" required style="padding: 8px;">
+                    <input type="email" placeholder="Email Address" required style="padding: 8px;">
+                    <select required style="padding: 8px;">
+                        <option value="" disabled selected>Select Topic...</option>
+                        <option value="sales">Sales & Product Info</option>
+                        <option value="tech">Tech Support</option>
+                        <option value="billing">Billing & Returns</option>
+                    </select>
+                    <button type="submit" class="btn-primary w-100" style="padding: 10px;">Start Chat</button>
+                </form>
+            </div>
+        </div>
+        <button class="chat-toggle-btn" onclick="toggleChat()">💬</button>
+    </div>
+
+    <script>
+        // --- Theme Switcher ---
+        function setTheme(theme) {
+            document.body.classList.remove('theme-blue', 'theme-black');
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            if (theme === 'blue') { document.body.classList.add('theme-blue'); document.querySelector('.btn-blue').classList.add('active'); } 
+            else if (theme === 'black') { document.body.classList.add('theme-black'); document.querySelector('.btn-black').classList.add('active'); } 
+            else { document.querySelector('.btn-default').classList.add('active'); }
+        }
+
+        // --- Pincode Checker ---
+        function checkPincode() {
+            const pincode = document.getElementById('pincodeInput').value;
+            const msgElement = document.getElementById('pincodeMsg');
+            msgElement.style.display = 'block';
+            if (pincode.length < 5) {
+                msgElement.textContent = 'Please enter a valid pincode.';
+                msgElement.className = 'pincode-msg error-msg';
+            } else {
+                msgElement.innerHTML = `Great news! Delivery is available to <strong>${pincode}</strong>.`;
+                msgElement.className = 'pincode-msg success-msg';
+            }
+        }
+
+        // --- Modal Handlers ---
+        function openCheckout() { document.getElementById('checkoutModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; document.body.style.overflow = 'auto'; }
+        
+        function submitForm(event, successMessage) {
+            event.preventDefault();
+            alert(successMessage);
+            event.target.reset();
+            closeModal('checkoutModal');
+        }
+
+        // --- Support Center Handlers ---
+        function openSupport(tabId) {
+            document.getElementById('supportModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            switchSupportTab(tabId);
+        }
+
+        function switchSupportTab(tabId) {
+            // Hide all contents and remove active class from buttons
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.support-tab-btn').forEach(el => el.classList.remove('active'));
+            
+            // Show selected content and activate button
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            // Find the button that called this (hacky but works for inline onclicks)
+            const buttons = document.querySelectorAll('.support-tab-btn');
+            for(let btn of buttons) {
+                if(btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            }
+        }
+
+        function mockTrackOrder(event) {
+            event.preventDefault();
+            document.getElementById('trackForm').style.display = 'none';
+            document.getElementById('trackingResult').style.display = 'block';
+        }
+
+        // --- Live Chat Handlers ---
+        function toggleChat() {
+            const chat = document.getElementById('chatWindow');
+            chat.style.display = (chat.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function startChat(event) {
+            event.preventDefault();
+            document.getElementById('chatBody').innerHTML = `
+                <div style="text-align:center; padding: 20px 0;">
+                    <h4 style="color: var(--accent-color);">Connecting to Agent...</h4>
+                    <p style="font-size: 0.9rem; color: var(--dark-gray); margin-top: 10px;">Our AI assistant 'SonicBot' is reviewing your details.</p>
+                </div>
+            `;
+        }
+
+        // --- Scroll Animations ---
+        const hiddenElements = document.querySelectorAll('.hidden');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('show'); });
+        }, { threshold: 0.15 });
+        hiddenElements.forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>
